@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, FlatList, StyleSheet, ActivityIndicator, Image, TextInput, TouchableOpacity } from 'react-native';
+import { View, Text, FlatList, StyleSheet, ActivityIndicator, Image, TextInput, TouchableOpacity, ScrollView } from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Slider from '@react-native-community/slider';
 import data from '../../api/data.json';
@@ -14,6 +14,8 @@ const CatalogScreen = () => {
     const [maxPrice, setMaxPrice] = useState(10000);
     const [selectedMinPrice, setSelectedMinPrice] = useState(0);
     const [selectedMaxPrice, setSelectedMaxPrice] = useState(10000);
+    const [collections, setCollections] = useState([]);
+    const [selectedCollections, setSelectedCollections] = useState([]);
 
     const imageMapping = {
         1: require('../../assets/images/product-image1.webp'),
@@ -32,10 +34,18 @@ const CatalogScreen = () => {
         const fetchData = () => {
             setProducts(data);
             setFilteredProducts(data);
-            setMinPrice(Math.min(...data.map(item => item.price)));
-            setMaxPrice(Math.max(...data.map(item => item.price)));
-            setSelectedMinPrice(Math.min(...data.map(item => item.price)));
-            setSelectedMaxPrice(Math.max(...data.map(item => item.price)));
+
+            const allCollections = new Set();
+            data.forEach((product) => {
+                product.collection.forEach((col) => allCollections.add(col));
+            });
+            setCollections([...allCollections]);
+
+            setMinPrice(Math.min(...data.map((item) => item.price)));
+            setMaxPrice(Math.max(...data.map((item) => item.price)));
+            setSelectedMinPrice(Math.min(...data.map((item) => item.price)));
+            setSelectedMaxPrice(Math.max(...data.map((item) => item.price)));
+
             setLoading(false);
         };
 
@@ -43,15 +53,30 @@ const CatalogScreen = () => {
     }, []);
 
     useEffect(() => {
-        const filtered = products.filter(
-            (product) =>
-                (product.productName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                    product.description.toLowerCase().includes(searchQuery.toLowerCase())) &&
-                product.price >= selectedMinPrice &&
-                product.price <= selectedMaxPrice
-        );
+        const filtered = products.filter((product) => {
+            const matchesSearch =
+                product.productName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                product.description.toLowerCase().includes(searchQuery.toLowerCase());
+
+            const matchesPrice =
+                product.price >= selectedMinPrice && product.price <= selectedMaxPrice;
+
+            const matchesCollection =
+                selectedCollections.length === 0 ||
+                product.collection.some((col) => selectedCollections.includes(col));
+
+            return matchesSearch && matchesPrice && matchesCollection;
+        });
         setFilteredProducts(filtered);
-    }, [searchQuery, selectedMinPrice, selectedMaxPrice, products]);
+    }, [searchQuery, selectedMinPrice, selectedMaxPrice, selectedCollections, products]);
+
+    const toggleCollection = (collection) => {
+        if (selectedCollections.includes(collection)) {
+            setSelectedCollections((prev) => prev.filter((col) => col !== collection));
+        } else {
+            setSelectedCollections((prev) => [...prev, collection]);
+        }
+    };
 
     if (loading) {
         return (
@@ -69,6 +94,31 @@ const CatalogScreen = () => {
                 value={searchQuery}
                 onChangeText={setSearchQuery}
             />
+
+            <View style={styles.filterContainer}>
+                {collections.map((collection) => (
+                    <TouchableOpacity
+                        key={collection}
+                        style={[
+                            styles.collectionButton,
+                            selectedCollections.includes(collection) && styles.activeCollectionButton,
+                        ]}
+                        onPress={() => toggleCollection(collection)}
+                    >
+                        <Text
+                            style={[
+                                styles.collectionButtonText,
+                                selectedCollections.includes(collection) && styles.activeCollectionButtonText,
+                            ]}
+                        >
+                            {collection}
+                        </Text>
+                    </TouchableOpacity>
+                ))}
+            </View>
+
+
+
             <View style={styles.priceFilter}>
                 <Text>Цена: {selectedMinPrice}₽ - {selectedMaxPrice}₽</Text>
                 <Slider
@@ -88,12 +138,10 @@ const CatalogScreen = () => {
                     onValueChange={(value) => setSelectedMaxPrice(value)}
                 />
             </View>
+
             <View style={styles.toggleContainer}>
                 <TouchableOpacity
-                    style={[
-                        styles.toggleButton,
-                        viewType === 'list' && styles.activeButton,
-                    ]}
+                    style={[styles.toggleButton, viewType === 'list' && styles.activeButton]}
                     onPress={() => setViewType('list')}
                 >
                     <MaterialCommunityIcons
@@ -103,10 +151,7 @@ const CatalogScreen = () => {
                     />
                 </TouchableOpacity>
                 <TouchableOpacity
-                    style={[
-                        styles.toggleButton,
-                        viewType === 'grid' && styles.activeButton,
-                    ]}
+                    style={[styles.toggleButton, viewType === 'grid' && styles.activeButton]}
                     onPress={() => setViewType('grid')}
                 >
                     <MaterialCommunityIcons
@@ -116,6 +161,7 @@ const CatalogScreen = () => {
                     />
                 </TouchableOpacity>
             </View>
+
             <FlatList
                 key={viewType}
                 data={filteredProducts}
@@ -123,19 +169,14 @@ const CatalogScreen = () => {
                 numColumns={viewType === 'grid' ? 2 : 1}
                 renderItem={({ item }) => (
                     <View style={[styles.item, viewType === 'grid' && styles.gridItem]}>
-                        <Image
-                            source={imageMapping[item.id]}
-                            style={styles.image}
-                        />
+                        <Image source={imageMapping[item.id]} style={styles.image} />
                         <Text style={styles.name}>{item.productName}</Text>
                         <Text style={styles.description}>{item.description}</Text>
                         <Text style={styles.price}>Цена: {item.price}₽</Text>
                     </View>
                 )}
                 contentContainerStyle={styles.list}
-                ListEmptyComponent={
-                    <Text style={styles.noResults}>Ничего не найдено</Text>
-                }
+                ListEmptyComponent={<Text style={styles.noResults}>Ничего не найдено</Text>}
             />
         </View>
     );
@@ -157,6 +198,42 @@ const styles = StyleSheet.create({
         margin: 10,
         paddingHorizontal: 10,
         borderRadius: 5,
+    },
+    filterContainer: {
+        flexDirection: 'row',
+        marginBottom: 10,
+        paddingHorizontal: 10,
+    },
+    collectionButton: {
+        padding: 10,
+        backgroundColor: '#e0e0e0',
+        borderRadius: 5,
+        marginHorizontal: 5,
+        marginVertical: 5,
+    },
+    activeCollectionButton: {
+        backgroundColor: '#ccc',
+    },
+    collectionButtonText: {
+        color: '#555',
+    },
+    activeCollectionButtonText: {
+        color: '#000',
+        fontWeight: 'bold',
+    },
+
+    collectionText: {
+        color: '#555',
+    },
+    activeCollectionText: {
+        color: '#000',
+        fontWeight: 'bold',
+    },
+    priceFilter: {
+        padding: 10,
+    },
+    slider: {
+        marginVertical: 5,
     },
     toggleContainer: {
         flexDirection: 'row',
@@ -212,12 +289,6 @@ const styles = StyleSheet.create({
         marginTop: 20,
         fontSize: 16,
         color: '#999',
-    },
-    priceFilter: {
-        padding: 10,
-    },
-    slider: {
-        marginVertical: 5,
     },
 });
 
