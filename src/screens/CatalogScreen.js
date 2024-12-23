@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, FlatList, StyleSheet, ActivityIndicator, Image, TextInput, TouchableOpacity } from 'react-native';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'; // Иконки
-
-// Импорт данных из локального JSON
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import Slider from '@react-native-community/slider';
 import data from '../../api/data.json';
 
 const CatalogScreen = () => {
@@ -10,9 +9,12 @@ const CatalogScreen = () => {
     const [loading, setLoading] = useState(true);
     const [searchQuery, setSearchQuery] = useState('');
     const [filteredProducts, setFilteredProducts] = useState([]);
-    const [viewType, setViewType] = useState('list'); // 'list' или 'grid'
+    const [viewType, setViewType] = useState('list');
+    const [minPrice, setMinPrice] = useState(0);
+    const [maxPrice, setMaxPrice] = useState(10000);
+    const [selectedMinPrice, setSelectedMinPrice] = useState(0);
+    const [selectedMaxPrice, setSelectedMaxPrice] = useState(10000);
 
-    // Сопоставление ID с локальными изображениями
     const imageMapping = {
         1: require('../../assets/images/product-image1.webp'),
         2: require('../../assets/images/product-image2.webp'),
@@ -28,16 +30,13 @@ const CatalogScreen = () => {
 
     useEffect(() => {
         const fetchData = () => {
-            try {
-                console.log('Начало загрузки данных...');
-                setProducts(data);
-                setFilteredProducts(data);
-                console.log('Данные загружены:', data);
-            } catch (error) {
-                console.error('Ошибка при загрузке данных:', error.message);
-            } finally {
-                setLoading(false);
-            }
+            setProducts(data);
+            setFilteredProducts(data);
+            setMinPrice(Math.min(...data.map(item => item.price)));
+            setMaxPrice(Math.max(...data.map(item => item.price)));
+            setSelectedMinPrice(Math.min(...data.map(item => item.price)));
+            setSelectedMaxPrice(Math.max(...data.map(item => item.price)));
+            setLoading(false);
         };
 
         fetchData();
@@ -46,11 +45,13 @@ const CatalogScreen = () => {
     useEffect(() => {
         const filtered = products.filter(
             (product) =>
-                product.productName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                product.description.toLowerCase().includes(searchQuery.toLowerCase())
+                (product.productName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                    product.description.toLowerCase().includes(searchQuery.toLowerCase())) &&
+                product.price >= selectedMinPrice &&
+                product.price <= selectedMaxPrice
         );
         setFilteredProducts(filtered);
-    }, [searchQuery, products]);
+    }, [searchQuery, selectedMinPrice, selectedMaxPrice, products]);
 
     if (loading) {
         return (
@@ -68,6 +69,25 @@ const CatalogScreen = () => {
                 value={searchQuery}
                 onChangeText={setSearchQuery}
             />
+            <View style={styles.priceFilter}>
+                <Text>Цена: {selectedMinPrice}₽ - {selectedMaxPrice}₽</Text>
+                <Slider
+                    style={styles.slider}
+                    minimumValue={minPrice}
+                    maximumValue={maxPrice}
+                    step={100}
+                    value={selectedMinPrice}
+                    onValueChange={(value) => setSelectedMinPrice(value)}
+                />
+                <Slider
+                    style={styles.slider}
+                    minimumValue={minPrice}
+                    maximumValue={maxPrice}
+                    step={100}
+                    value={selectedMaxPrice}
+                    onValueChange={(value) => setSelectedMaxPrice(value)}
+                />
+            </View>
             <View style={styles.toggleContainer}>
                 <TouchableOpacity
                     style={[
@@ -77,7 +97,7 @@ const CatalogScreen = () => {
                     onPress={() => setViewType('list')}
                 >
                     <MaterialCommunityIcons
-                        name="view-list" // Иконка для списка
+                        name="view-list"
                         size={24}
                         color={viewType === 'list' ? '#000' : '#888'}
                     />
@@ -90,7 +110,7 @@ const CatalogScreen = () => {
                     onPress={() => setViewType('grid')}
                 >
                     <MaterialCommunityIcons
-                        name="view-grid" // Иконка для сетки
+                        name="view-grid"
                         size={24}
                         color={viewType === 'grid' ? '#000' : '#888'}
                     />
@@ -192,6 +212,12 @@ const styles = StyleSheet.create({
         marginTop: 20,
         fontSize: 16,
         color: '#999',
+    },
+    priceFilter: {
+        padding: 10,
+    },
+    slider: {
+        marginVertical: 5,
     },
 });
 
