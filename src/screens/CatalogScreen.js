@@ -28,7 +28,7 @@ const CatalogScreen = () => {
     const [selectedMaxPrice, setSelectedMaxPrice] = useState(10000);
     const [collections, setCollections] = useState([]);
     const [selectedCollections, setSelectedCollections] = useState([]);
-    const [filtersVisible, setFiltersVisible] = useState(true);
+    const [filtersVisible, setFiltersVisible] = useState(false);
 
     const { addToCart } = useContext(CartContext);
 
