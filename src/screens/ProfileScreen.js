@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, Text, Button, StyleSheet } from 'react-native';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 const ProfileScreen = ({ navigation }) => {
     const handleLogout = () => {
@@ -11,6 +12,7 @@ const ProfileScreen = ({ navigation }) => {
 
     return (
         <View style={styles.container}>
+            <MaterialCommunityIcons name="account-circle" size={100} color="#000" />
             <Text style={styles.title}>Профиль</Text>
             <Button title="Выйти" onPress={handleLogout} />
         </View>
