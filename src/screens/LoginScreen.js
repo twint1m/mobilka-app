@@ -7,12 +7,11 @@ const LoginScreen = ({ navigation }) => {
 
     const handleLogin = () => {
         if (username.trim() && password.trim()) {
-            navigation.replace('Main'); // Убедитесь, что имя совпадает с AppNavigator
+            navigation.replace('MainTabs'); // Убедитесь, что здесь используется имя стека из AppNavigator
         } else {
             Alert.alert('Ошибка', 'Введите имя пользователя и пароль');
         }
     };
-
 
 
     return (

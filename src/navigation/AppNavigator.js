@@ -12,37 +12,52 @@ import {CartContext} from "../../context/CartContext";
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
 
-const TabNavigator = () => (
-    <Tab.Navigator
-        screenOptions={({ route }) => ({
-            tabBarIcon: ({ color, size }) => {
-                let iconName;
+const MainTabs = () => {
+    const { cartItems } = useContext(CartContext);
 
-                if (route.name === 'Catalog') {
-                    iconName = 'shopping';
-                } else if (route.name === 'Cart') {
-                    iconName = 'cart';
-                } else if (route.name === 'Profile') {
-                    iconName = 'account';
-                }
+    return (
+        <Tab.Navigator
+            screenOptions={({ route }) => ({
+                tabBarIcon: ({ color, size }) => {
+                    let iconName;
 
-                return <MaterialCommunityIcons name={iconName} color={color} size={size} />;
-            },
-        })}
-    >
-        <Tab.Screen name="Catalog" component={CatalogScreen} />
-        <Tab.Screen name="Cart" component={CartScreen} />
-        <Tab.Screen name="Profile" component={ProfileScreen} />
-    </Tab.Navigator>
-);
+                    if (route.name === 'Catalog') {
+                        iconName = 'shopping';
+                    } else if (route.name === 'Cart') {
+                        iconName = 'cart';
+                    } else if (route.name === 'Profile') {
+                        iconName = 'account';
+                    }
 
-const AppNavigator = () => (
-    <NavigationContainer>
-        <Stack.Navigator initialRouteName="Login" screenOptions={{ headerShown: false }}>
-            <Stack.Screen name="Login" component={LoginScreen} />
-            <Stack.Screen name="Main" component={TabNavigator} />
-        </Stack.Navigator>
-    </NavigationContainer>
-);
+                    return <MaterialCommunityIcons name={iconName} color={color} size={size} />;
+                },
+                tabBarBadge: route.name === 'Cart' && cartItems.length > 0 ? cartItems.length : undefined,
+            })}
+        >
+            <Tab.Screen name="Catalog" component={CatalogScreen} />
+            <Tab.Screen name="Cart" component={CartScreen} />
+            <Tab.Screen name="Profile" component={ProfileScreen} />
+        </Tab.Navigator>
+    );
+};
+
+const AppNavigator = () => {
+    return (
+        <NavigationContainer>
+            <Stack.Navigator initialRouteName="Login">
+                <Stack.Screen
+                    name="Login"
+                    component={LoginScreen}
+                    options={{ headerShown: false }}
+                />
+                <Stack.Screen
+                    name="MainTabs"
+                    component={MainTabs}
+                    options={{ headerShown: false }}
+                />
+            </Stack.Navigator>
+        </NavigationContainer>
+    );
+};
 
 export default AppNavigator;
