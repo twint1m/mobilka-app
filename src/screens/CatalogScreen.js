@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, FlatList, StyleSheet, ActivityIndicator, Image } from 'react-native';
+import { View, Text, FlatList, StyleSheet, ActivityIndicator, Image, TextInput, TouchableOpacity } from 'react-native';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'; // Иконки
 
 // Импорт данных из локального JSON
 import data from '../../api/data.json';
@@ -7,6 +8,9 @@ import data from '../../api/data.json';
 const CatalogScreen = () => {
     const [products, setProducts] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [searchQuery, setSearchQuery] = useState('');
+    const [filteredProducts, setFilteredProducts] = useState([]);
+    const [viewType, setViewType] = useState('list'); // 'list' или 'grid'
 
     // Сопоставление ID с локальными изображениями
     const imageMapping = {
@@ -26,17 +30,27 @@ const CatalogScreen = () => {
         const fetchData = () => {
             try {
                 console.log('Начало загрузки данных...');
-                setProducts(data); // Загружаем данные из локального JSON
+                setProducts(data);
+                setFilteredProducts(data);
                 console.log('Данные загружены:', data);
             } catch (error) {
                 console.error('Ошибка при загрузке данных:', error.message);
             } finally {
-                setLoading(false); // Завершаем "загрузку"
+                setLoading(false);
             }
         };
 
         fetchData();
     }, []);
+
+    useEffect(() => {
+        const filtered = products.filter(
+            (product) =>
+                product.productName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                product.description.toLowerCase().includes(searchQuery.toLowerCase())
+        );
+        setFilteredProducts(filtered);
+    }, [searchQuery, products]);
 
     if (loading) {
         return (
@@ -47,30 +61,95 @@ const CatalogScreen = () => {
     }
 
     return (
-        <FlatList
-            data={products}
-            keyExtractor={(item) => item.id.toString()}
-            renderItem={({ item }) => (
-                <View style={styles.item}>
-                    <Image
-                        source={imageMapping[item.id]} // Используем локальное сопоставление
-                        style={styles.image}
+        <View style={styles.container}>
+            <TextInput
+                style={styles.searchInput}
+                placeholder="Поиск товаров..."
+                value={searchQuery}
+                onChangeText={setSearchQuery}
+            />
+            <View style={styles.toggleContainer}>
+                <TouchableOpacity
+                    style={[
+                        styles.toggleButton,
+                        viewType === 'list' && styles.activeButton,
+                    ]}
+                    onPress={() => setViewType('list')}
+                >
+                    <MaterialCommunityIcons
+                        name="view-list" // Иконка для списка
+                        size={24}
+                        color={viewType === 'list' ? '#000' : '#888'}
                     />
-                    <Text style={styles.name}>{item.productName}</Text>
-                    <Text style={styles.description}>{item.description}</Text>
-                    <Text style={styles.price}>Цена: {item.price}₽</Text>
-                </View>
-            )}
-            contentContainerStyle={styles.list}
-        />
+                </TouchableOpacity>
+                <TouchableOpacity
+                    style={[
+                        styles.toggleButton,
+                        viewType === 'grid' && styles.activeButton,
+                    ]}
+                    onPress={() => setViewType('grid')}
+                >
+                    <MaterialCommunityIcons
+                        name="view-grid" // Иконка для сетки
+                        size={24}
+                        color={viewType === 'grid' ? '#000' : '#888'}
+                    />
+                </TouchableOpacity>
+            </View>
+            <FlatList
+                key={viewType}
+                data={filteredProducts}
+                keyExtractor={(item) => item.id.toString()}
+                numColumns={viewType === 'grid' ? 2 : 1}
+                renderItem={({ item }) => (
+                    <View style={[styles.item, viewType === 'grid' && styles.gridItem]}>
+                        <Image
+                            source={imageMapping[item.id]}
+                            style={styles.image}
+                        />
+                        <Text style={styles.name}>{item.productName}</Text>
+                        <Text style={styles.description}>{item.description}</Text>
+                        <Text style={styles.price}>Цена: {item.price}₽</Text>
+                    </View>
+                )}
+                contentContainerStyle={styles.list}
+                ListEmptyComponent={
+                    <Text style={styles.noResults}>Ничего не найдено</Text>
+                }
+            />
+        </View>
     );
 };
 
 const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+    },
     loader: {
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
+    },
+    searchInput: {
+        height: 40,
+        borderColor: '#ccc',
+        borderWidth: 1,
+        margin: 10,
+        paddingHorizontal: 10,
+        borderRadius: 5,
+    },
+    toggleContainer: {
+        flexDirection: 'row',
+        justifyContent: 'center',
+        marginBottom: 10,
+    },
+    toggleButton: {
+        padding: 10,
+        borderRadius: 5,
+        marginHorizontal: 5,
+    },
+    activeButton: {
+        backgroundColor: '#ddd',
     },
     list: {
         padding: 20,
@@ -82,6 +161,11 @@ const styles = StyleSheet.create({
         borderRadius: 5,
         elevation: 2,
         alignItems: 'center',
+        flex: 1,
+        margin: 5,
+    },
+    gridItem: {
+        flex: 0.5,
     },
     image: {
         width: 100,
@@ -102,6 +186,12 @@ const styles = StyleSheet.create({
     price: {
         fontSize: 16,
         color: '#333',
+    },
+    noResults: {
+        textAlign: 'center',
+        marginTop: 20,
+        fontSize: 16,
+        color: '#999',
     },
 });
 
