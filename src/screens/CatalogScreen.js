@@ -1,8 +1,20 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text, FlatList, StyleSheet, ActivityIndicator, Image, TextInput, TouchableOpacity, ScrollView } from 'react-native';
+import React, { useEffect, useState, useContext } from 'react';
+import {
+    View,
+    Text,
+    FlatList,
+    StyleSheet,
+    ActivityIndicator,
+    Image,
+    TextInput,
+    TouchableOpacity,
+    SafeAreaView,
+    Button,
+} from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Slider from '@react-native-community/slider';
 import data from '../../api/data.json';
+import {CartContext} from "../../context/CartContext";
 
 const CatalogScreen = () => {
     const [products, setProducts] = useState([]);
@@ -16,6 +28,8 @@ const CatalogScreen = () => {
     const [selectedMaxPrice, setSelectedMaxPrice] = useState(10000);
     const [collections, setCollections] = useState([]);
     const [selectedCollections, setSelectedCollections] = useState([]);
+
+    const { addToCart } = useContext(CartContext);
 
     const imageMapping = {
         1: require('../../assets/images/product-image1.webp'),
@@ -87,7 +101,7 @@ const CatalogScreen = () => {
     }
 
     return (
-        <View style={styles.container}>
+        <SafeAreaView style={styles.container}>
             <TextInput
                 style={styles.searchInput}
                 placeholder="Поиск товаров..."
@@ -116,8 +130,6 @@ const CatalogScreen = () => {
                     </TouchableOpacity>
                 ))}
             </View>
-
-
 
             <View style={styles.priceFilter}>
                 <Text>Цена: {selectedMinPrice}₽ - {selectedMaxPrice}₽</Text>
@@ -173,12 +185,13 @@ const CatalogScreen = () => {
                         <Text style={styles.name}>{item.productName}</Text>
                         <Text style={styles.description}>{item.description}</Text>
                         <Text style={styles.price}>Цена: {item.price}₽</Text>
+                        <Button title="Добавить в корзину" onPress={() => addToCart(item)} />
                     </View>
                 )}
                 contentContainerStyle={styles.list}
                 ListEmptyComponent={<Text style={styles.noResults}>Ничего не найдено</Text>}
             />
-        </View>
+        </SafeAreaView>
     );
 };
 
@@ -203,6 +216,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         marginBottom: 10,
         paddingHorizontal: 10,
+        flexWrap: 'wrap',
     },
     collectionButton: {
         padding: 10,
@@ -218,14 +232,6 @@ const styles = StyleSheet.create({
         color: '#555',
     },
     activeCollectionButtonText: {
-        color: '#000',
-        fontWeight: 'bold',
-    },
-
-    collectionText: {
-        color: '#555',
-    },
-    activeCollectionText: {
         color: '#000',
         fontWeight: 'bold',
     },

@@ -7,11 +7,12 @@ const LoginScreen = ({ navigation }) => {
 
     const handleLogin = () => {
         if (username.trim() && password.trim()) {
-            navigation.navigate('Catalog');
+            navigation.replace('MainTabs'); // Заменяем на MainTabs
         } else {
             Alert.alert('Ошибка', 'Введите имя пользователя и пароль');
         }
     };
+
 
     return (
         <View style={styles.container}>
