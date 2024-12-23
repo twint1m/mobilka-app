@@ -1,0 +1,258 @@
+[
+  {
+    "id": 1,
+    "colorName": "Белый",
+    "productName": "Декоративные свечи",
+    "imagePath": "assets/images/product-image1.webp",
+    "height": 10,
+    "length": 10,
+    "width": 10,
+    "weight": 1,
+    "price": 1200,
+    "description": "Эти красивые декоративные свечи прекрасно подходят для создания уюта в вашем доме",
+    "availability": true,
+    "collection": [
+      "Осенняя коллекция",
+      "Домашний уют"
+    ],
+    "variations": [
+      {
+        "colorName": "Белый",
+        "color": "#FF0000",
+        "imagePath": "/product-image.jpg"
+      },
+      {
+        "colorName": "Белый",
+        "color": "#FF0000",
+        "imagePath": "/product-image.jpg"
+      },
+      {
+        "colorName": "Белый",
+        "color": "#0000FF",
+        "imagePath": "/product-image.jpg"
+      }
+    ]
+  },
+  {
+    "id": 2,
+    "colorName": "Белый",
+    "productName": "Художественная картина",
+    "imagePath": "assets/images/product-image2.webp",
+    "height": 80,
+    "length": 120,
+    "width": 4,
+    "weight": 3,
+    "price": 8900,
+    "description": "Эта прекрасная художественная картина станет великолепным украшением вашей стены",
+    "availability": true,
+    "collection": [
+      "Весенняя коллекция",
+      "Искусство в доме"
+    ],
+    "variations": [
+      {
+        "colorName": "Белый",
+        "color": "#FF0000",
+        "imagePath": "/product-image.jpg"
+      }
+    ]
+  },
+  {
+    "id": 3,
+    "colorName": "Белый",
+    "productName": "Мраморный столик",
+    "imagePath": "assets/images/product-image3.webp",
+    "height": 50,
+    "length": 70,
+    "width": 70,
+    "weight": 15,
+    "price": 5600,
+    "description": "Этот стильный мраморный столик прекрасно впишется в любой современный интерьер",
+    "availability": true,
+    "collection": [
+      "Летняя коллекция",
+      "Минимализм"
+    ],
+    "variations": [
+      {
+        "colorName": "Белый",
+        "color": "#FF0000",
+        "imagePath": "/product-image.jpg"
+      },
+      {
+        "colorName": "Белый",
+        "color": "#FF0000",
+        "imagePath": "/product-image.jpg"
+      }
+    ]
+  },
+  {
+    "id": 4,
+    "colorName": "Белый",
+    "productName": "Плед из мериносовой шерсти",
+    "imagePath": "assets/images/product-image4.webp",
+    "height": 150,
+    "length": 200,
+    "width": 1,
+    "weight": 2,
+    "price": 6900,
+    "description": "Этот плед из мериносовой шерсти станет вашим лучшим другом в холодные зимние вечера",
+    "availability": true,
+    "collection": [
+      "Зимняя коллекция",
+      "Тепло и уют"
+    ],
+    "variations": [
+      {
+        "colorName": "Белый",
+        "color": "#808080",
+        "imagePath": "/product-image.jpg"
+      },
+      {
+        "colorName": "Белый",
+        "color": "#F5F5DC",
+        "imagePath": "/product-image.jpg"
+      }
+    ]
+  },
+  {
+    "id": 5,
+    "colorName": "Белый",
+    "productName": "Декоративные подушки",
+    "imagePath": "assets/images/product-image5.webp",
+    "height": 40,
+    "length": 40,
+    "width": 10,
+    "weight": 1,
+    "price": 5500,
+    "description": "Эти стильные декоративные подушки добавят уют и комфорт в ваш дом",
+    "availability": true,
+    "collection": [
+      "Осенняя коллекция",
+      "Мягкие детали"
+    ],
+    "variations": [
+      {
+        "colorName": "Белый",
+        "color": "#808080",
+        "imagePath": "/product-image.jpg"
+      },
+      {
+        "colorName": "Белый",
+        "color": "#808080",
+        "imagePath": "/product-image.jpg"
+      },
+      {
+        "colorName": "Белый",
+        "color": "#008000",
+        "imagePath": "/product-image.jpg"
+      }
+    ]
+  },
+  {
+    "id": 6,
+    "colorName": "Белый",
+    "productName": "Люстра из хрусталя",
+    "imagePath": "assets/images/product-image6.webp",
+    "height": 60,
+    "length": 40,
+    "width": 40,
+    "weight": 8,
+    "price": 9900,
+    "description": "Эта роскошная люстра из хрусталя придаст вашему интерьеру изысканности и шарма",
+    "availability": true,
+    "collection": [
+      "Весенняя коллекция",
+      "Роскошный стиль"
+    ],
+    "variations": [
+      {
+        "colorName": "Белый",
+        "color": "#FFFFFF",
+        "imagePath": "/product-image.jpg"
+      }
+    ]
+  },
+  {
+    "id": 7,
+    "colorName": "Белый",
+    "productName": "Мраморная ваза",
+    "imagePath": "assets/images/product-image7.webp",
+    "height": 30,
+    "length": 20,
+    "width": 20,
+    "weight": 5,
+    "price": 4800,
+    "description": "Эта элегантная мраморная ваза станет изысканным дополнением к вашему интерьеру",
+    "availability": true,
+    "collection": [
+      "Осенняя коллекция",
+      "Статуэтки и вазы"
+    ],
+    "variations": [
+      {
+        "colorName": "Белый",
+        "color": "#FFFF00",
+        "imagePath": "/product-image.jpg"
+      }
+    ]
+  },
+  {
+    "id": 8,
+    "colorName": "Белый",
+    "productName": "Ковровая дорожка",
+    "imagePath": "assets/images/product-image8.webp",
+    "height": 80,
+    "length": 200,
+    "width": 1,
+    "weight": 3,
+    "price": 7700,
+    "description": "Эта ковровая дорожка с ярким и стильным узором добавит интересный акцент в ваш дом",
+    "availability": true,
+    "collection": [
+      "Весенняя коллекция",
+      "Современные решения"
+    ],
+    "variations": [
+      {
+        "colorName": "Белый",
+        "color": "#FFFF00",
+        "imagePath": "/product-image.jpg"
+      }
+    ]
+  },
+  {
+    "id": 9,
+    "colorName": "Белый",
+    "productName": "Картина с маслом",
+    "imagePath": "assets/images/product-image9.webp",
+    "height": 70,
+    "length": 100,
+    "width": 3,
+    "weight": 2,
+    "price": 8800,
+    "description": "Эта картина, выполненная маслом, станет настоящим произведением искусства в вашем доме",
+    "availability": true,
+    "collection": [
+      "Летняя коллекция",
+      "Мастера искусства"
+    ]
+  },
+  {
+    "id": 10,
+    "colorName": "Белый",
+    "productName": "Настольный фонтан",
+    "imagePath": "assets/images/product-image10.webp",
+    "height": 25,
+    "length": 20,
+    "width": 20,
+    "weight": 3,
+    "price": 5600,
+    "description": "Этот настольный фонтан создаст атмосферу уюта и спокойствия в вашем доме",
+    "availability": true,
+    "collection": [
+      "Осенняя коллекция",
+      "Элементы природы"
+    ]
+  }
+]
