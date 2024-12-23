@@ -10,7 +10,6 @@ import {
     TouchableOpacity,
     SafeAreaView,
     Button,
-    Alert,
 } from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Slider from '@react-native-community/slider';
@@ -29,6 +28,7 @@ const CatalogScreen = () => {
     const [selectedMaxPrice, setSelectedMaxPrice] = useState(10000);
     const [collections, setCollections] = useState([]);
     const [selectedCollections, setSelectedCollections] = useState([]);
+    const [filtersVisible, setFiltersVisible] = useState(true);
 
     const { addToCart } = useContext(CartContext);
 
@@ -103,54 +103,62 @@ const CatalogScreen = () => {
 
     return (
         <SafeAreaView style={styles.container}>
-            <TextInput
-                style={styles.searchInput}
-                placeholder="Поиск товаров..."
-                value={searchQuery}
-                onChangeText={setSearchQuery}
+            <Button
+                title={filtersVisible ? 'Скрыть фильтры' : 'Показать фильтры'}
+                onPress={() => setFiltersVisible(!filtersVisible)}
             />
+            {filtersVisible && (
+                <>
+                    <TextInput
+                        style={styles.searchInput}
+                        placeholder="Поиск товаров..."
+                        value={searchQuery}
+                        onChangeText={setSearchQuery}
+                    />
 
-            <View style={styles.filterContainer}>
-                {collections.map((collection) => (
-                    <TouchableOpacity
-                        key={collection}
-                        style={[
-                            styles.collectionButton,
-                            selectedCollections.includes(collection) && styles.activeCollectionButton,
-                        ]}
-                        onPress={() => toggleCollection(collection)}
-                    >
-                        <Text
-                            style={[
-                                styles.collectionButtonText,
-                                selectedCollections.includes(collection) && styles.activeCollectionButtonText,
-                            ]}
-                        >
-                            {collection}
-                        </Text>
-                    </TouchableOpacity>
-                ))}
-            </View>
+                    <View style={styles.filterContainer}>
+                        {collections.map((collection) => (
+                            <TouchableOpacity
+                                key={collection}
+                                style={[
+                                    styles.collectionButton,
+                                    selectedCollections.includes(collection) && styles.activeCollectionButton,
+                                ]}
+                                onPress={() => toggleCollection(collection)}
+                            >
+                                <Text
+                                    style={[
+                                        styles.collectionButtonText,
+                                        selectedCollections.includes(collection) && styles.activeCollectionButtonText,
+                                    ]}
+                                >
+                                    {collection}
+                                </Text>
+                            </TouchableOpacity>
+                        ))}
+                    </View>
 
-            <View style={styles.priceFilter}>
-                <Text>Цена: {selectedMinPrice}₽ - {selectedMaxPrice}₽</Text>
-                <Slider
-                    style={styles.slider}
-                    minimumValue={minPrice}
-                    maximumValue={maxPrice}
-                    step={100}
-                    value={selectedMinPrice}
-                    onValueChange={(value) => setSelectedMinPrice(value)}
-                />
-                <Slider
-                    style={styles.slider}
-                    minimumValue={minPrice}
-                    maximumValue={maxPrice}
-                    step={100}
-                    value={selectedMaxPrice}
-                    onValueChange={(value) => setSelectedMaxPrice(value)}
-                />
-            </View>
+                    <View style={styles.priceFilter}>
+                        <Text>Цена: {selectedMinPrice}₽ - {selectedMaxPrice}₽</Text>
+                        <Slider
+                            style={styles.slider}
+                            minimumValue={minPrice}
+                            maximumValue={maxPrice}
+                            step={100}
+                            value={selectedMinPrice}
+                            onValueChange={(value) => setSelectedMinPrice(value)}
+                        />
+                        <Slider
+                            style={styles.slider}
+                            minimumValue={minPrice}
+                            maximumValue={maxPrice}
+                            step={100}
+                            value={selectedMaxPrice}
+                            onValueChange={(value) => setSelectedMaxPrice(value)}
+                        />
+                    </View>
+                </>
+            )}
 
             <View style={styles.toggleContainer}>
                 <TouchableOpacity
@@ -186,13 +194,7 @@ const CatalogScreen = () => {
                         <Text style={styles.name}>{item.productName}</Text>
                         <Text style={styles.description}>{item.description}</Text>
                         <Text style={styles.price}>Цена: {item.price}₽</Text>
-                        <Button
-                            title="Добавить в корзину"
-                            onPress={() => {
-                                addToCart(item);
-                                Alert.alert('Добавлено в корзину', `${item.productName} добавлен.`);
-                            }}
-                        />
+                        <Button title="Добавить в корзину" onPress={() => addToCart(item)} />
                     </View>
                 )}
                 contentContainerStyle={styles.list}
