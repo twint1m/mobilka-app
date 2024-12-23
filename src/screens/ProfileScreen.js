@@ -1,23 +1,17 @@
 import React from 'react';
-import { View, Text, StyleSheet, Button } from 'react-native';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import { View, Text, Button, StyleSheet } from 'react-native';
 
-const ProfileScreen = ({ route, navigation }) => {
-    const { username } = route.params || { username: 'Гость' };
-
+const ProfileScreen = ({ navigation }) => {
     const handleLogout = () => {
-        navigation.replace('Login');
+        navigation.reset({
+            index: 0,
+            routes: [{ name: 'Login' }],
+        });
     };
 
     return (
         <View style={styles.container}>
-            <MaterialCommunityIcons
-                name="account-circle"
-                size={120}
-                color="#000"
-                style={styles.icon}
-            />
-            <Text style={styles.username}>Привет, {username}!</Text>
+            <Text style={styles.title}>Профиль</Text>
             <Button title="Выйти" onPress={handleLogout} />
         </View>
     );
@@ -28,11 +22,9 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
+        padding: 20,
     },
-    icon: {
-        marginBottom: 20,
-    },
-    username: {
+    title: {
         fontSize: 24,
         marginBottom: 20,
     },

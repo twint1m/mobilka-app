@@ -1,27 +1,23 @@
 import React, { useContext } from 'react';
-import { View, Text, FlatList, StyleSheet, Button } from 'react-native';
+import { View, Text, FlatList, StyleSheet } from 'react-native';
 import {CartContext} from "../../context/CartContext";
 
 const CartScreen = () => {
-    const { cartItems, removeFromCart } = useContext(CartContext);
+    const { cartItems } = useContext(CartContext);
 
     return (
         <View style={styles.container}>
-            {cartItems.length === 0 ? (
-                <Text style={styles.emptyText}>Корзина пуста</Text>
-            ) : (
-                <FlatList
-                    data={cartItems}
-                    keyExtractor={(item) => item.id.toString()}
-                    renderItem={({ item }) => (
-                        <View style={styles.item}>
-                            <Text style={styles.name}>{item.name}</Text>
-                            <Text style={styles.price}>Цена: {item.price}₽</Text>
-                            <Button title="Удалить" onPress={() => removeFromCart(item.id)} />
-                        </View>
-                    )}
-                />
-            )}
+            <FlatList
+                data={cartItems}
+                keyExtractor={(item) => item.id.toString()}
+                renderItem={({ item }) => (
+                    <View style={styles.item}>
+                        <Text>{item.productName}</Text>
+                        <Text>{item.price}₽</Text>
+                    </View>
+                )}
+                ListEmptyComponent={<Text style={styles.emptyText}>Корзина пуста</Text>}
+            />
         </View>
     );
 };
@@ -29,25 +25,20 @@ const CartScreen = () => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        padding: 20,
+        padding: 10,
+    },
+    item: {
+        marginBottom: 10,
+        padding: 10,
+        borderWidth: 1,
+        borderColor: '#ccc',
+        borderRadius: 5,
     },
     emptyText: {
         textAlign: 'center',
-        fontSize: 18,
-        color: '#777',
-    },
-    item: {
-        padding: 15,
-        borderBottomWidth: 1,
-        borderColor: '#ddd',
-    },
-    name: {
-        fontSize: 18,
-        fontWeight: 'bold',
-    },
-    price: {
+        marginTop: 20,
         fontSize: 16,
-        color: '#333',
+        color: '#999',
     },
 });
 

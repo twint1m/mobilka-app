@@ -10,11 +10,12 @@ import {
     TouchableOpacity,
     SafeAreaView,
     Button,
+    Alert,
 } from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Slider from '@react-native-community/slider';
 import data from '../../api/data.json';
-import {CartContext} from "../../context/CartContext";
+import { CartContext } from '../../context/CartContext';
 
 const CatalogScreen = () => {
     const [products, setProducts] = useState([]);
@@ -185,7 +186,13 @@ const CatalogScreen = () => {
                         <Text style={styles.name}>{item.productName}</Text>
                         <Text style={styles.description}>{item.description}</Text>
                         <Text style={styles.price}>Цена: {item.price}₽</Text>
-                        <Button title="Добавить в корзину" onPress={() => addToCart(item)} />
+                        <Button
+                            title="Добавить в корзину"
+                            onPress={() => {
+                                addToCart(item);
+                                Alert.alert('Добавлено в корзину', `${item.productName} добавлен.`);
+                            }}
+                        />
                     </View>
                 )}
                 contentContainerStyle={styles.list}
